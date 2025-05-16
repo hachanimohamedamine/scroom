@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Scroom - Hachani Mohamed Amine</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      font-family: 'Arial', sans-serif;
+      height: 100%;
+      background: linear-gradient(-45deg, #081b7b, #580252, #1b6305, #430518);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+      color: white;
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50% }
+      50% { background-position: 100% 50% }
+      100% { background-position: 0% 50% }
+    }
+
+    header {
+      padding: 15px;
+      background: rgba(0, 0, 0, 0.3);
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .main {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+
+    #video-container {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    video {
+      border-radius: 12px;
+      border: 3px solid white;
+      width: 300px;
+      height: auto;
+      background: black;
+    }
+
+    #chat-box {
+      width: 90%;
+      max-width: 600px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 15px;
+      height: 250px;
+      overflow-y: auto;
+      margin-bottom: 15px;
+    }
+
+    .message {
+      padding: 8px 12px;
+      margin-bottom: 6px;
+      border-radius: 12px;
+      max-width: 75%;
+      clear: both;
+    }
+
+    .you { background: #60a5fa; color: #fff; float: left; }
+    .friend { background: #34d399; color: #fff; float: right; }
+
+    form {
+      display: flex;
+      width: 90%;
+      max-width: 600px;
+      gap: 10px;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      font-size: 16px;
+    }
+
+    button {
+      padding: 10px 15px;
+      border: none;
+      border-radius: 8px;
+      background: #2563eb;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    @media (max-width: 768px) {
+      video { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <header>🎙️🎥 Scroom Chat - by Hachani Mohamed Amine</header>
+  <div class="main">
+    <div id="video-container">
+      <video id="localVideo" autoplay muted playsinline></video>
+      <video id="remoteVideo" autoplay playsinline></video>
+    </div>
+    <div id="chat-box"></div>
+    <form id="chatForm">
+      <input type="text" id="messageInput" placeholder="Type a message..." required />
+      <button type="submit">Send</button>
+    </form>
+  </div>
+
+  <script>
+    const localVideo = document.getElementById("localVideo");
+    const remoteVideo = document.getElementById("remoteVideo");
+    const chatBox = document.getElementById("chat-box");
+    const chatForm = document.getElementById("chatForm");
+    const messageInput = document.getElementById("messageInput");
+
+    // Basic peer-to-peer using local only (demo version)
+    let localStream;
+
+    navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+      .then(stream => {
+        localVideo.srcObject = stream;
+        localStream = stream;
+      })
+      .catch(err => alert("Could not access camera and microphone"));
+
+    // Mock demo for local chat
+    chatForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const msg = messageInput.value.trim();
+      if (!msg) return;
+
+      appendMessage("you", msg);
+      setTimeout(() => appendMessage("friend", "Echo: " + msg), 1000);
+
+      messageInput.value = '';
+    });
+
+    function appendMessage(sender, text) {
+      const div = document.createElement("div");
+      div.className = "message " + sender;
+      div.textContent = `${sender === "you" ? "You" : "Friend"}: ${text}`;
+      chatBox.appendChild(div);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+  </script>
+</body>
+</html>
